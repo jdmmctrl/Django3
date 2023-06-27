@@ -1,0 +1,15 @@
+
+* pip install virtualenv
+* python -m virtualenv venv
+* venv\Scripts\activate
+* deactivate
+* pip install django
+* django-admin startproject core .
+* python manage.py startapp core
+* python manage.py runserver
+* python manage.py createsuperuser
+* python manage.py makemigrations
+* python manage.py migrate
+* pip freeze > requirements.txt
+* pip install -r requirements.txt
+* https://render.com/docs/deploy-django
