@@ -1,0 +1,170 @@
+* apt-get install nginx -y
+* cd  /etc/nginx/
+* cd  /etc/nginx/sites-available
+* cp default ctrljdmm.ddns.net
+* nano ctrljdmm.ddns.net
+* nginx -s reload
+* nginx -t
+* systemctl reload nginx
+
+
+***
+    server {
+	listen 80;
+	listen [::]:80;
+
+	root /var/www/ctrl;
+
+	server_name ctrljdmm.ddns.net;
+
+* cd /etc/nginx/sites-enabled/
+
+
+* ln -s ../sites-available/juan.murillo.com .
+* ln -s ../sites-available/david.murillo.com .
+* nginx -s reload
+* nginx -t
+* systemctl reload nginx
+
+* cd /var/www/
+* mkdir juan
+* cd juan 
+* nano index.html 
+
+*********** Instalacion LEMP***************
+https://www.scriptcase.net/docs/es_es/v9/manual/02-scriptcase-installation/06-linux_php/
+
+* apt-get update
+* apt-get install php-fpm -y
+* nano /etc/nginx/sites-enabled/juan.murillo.com
+
+*** 
+	# pass PHP scripts to FastCGI server
+	#
+	location ~ \.php$ {
+		include snippets/fastcgi-php.conf;
+	
+		# With php-fpm (or other unix sockets):
+		fastcgi_pass unix:/run/php/php7.4-fpm.sock;
+	#	# With php-cgi (or other tcp sockets):
+	#	fastcgi_pass 127.0.0.1:9000;
+	}
+
+	# deny access to .htaccess files, if Apache's document root
+	# concurs with nginx's one
+	#
+	location ~ /\.ht {
+		deny all;
+	}
+}
+* nano /var/www/juan/info.php
+***
+<?php
+phpinfo();
+?>
+
+* nginx -s reload
+* nginx -t
+* systemctl reload nginx
+
+* tail -f /var/log/nginx/error.log
+* cd /var/run/php/
+* ls /var/run/php/php7.4-fpm.sock
+* cd /var/www/juan/
+* apt-get install mysql-server php-mysql -y
+* wget https://files.phpmyadmin.net/phpMyAdmin/5.2.1/phpMyAdmin-5.2.1-all-languages.zip
+* apt-get install unzip
+* unzip phpMyAdmin-5.2.1-all-languages
+* mv phpMyAdmin-5.2.1-all-languages phpmyadmin
+* nginx -s reload
+* nginx -t
+* systemctl reload nginx
+* mysqladmin --user=root password "ctrl"
+* mysql -u root -p
+* CREATE USER 'ctrladmin'@'localhost' IDENTIFIED BY 'ctrl';
+* GRANT ALL PRIVILEGES ON *.* TO 'ctrladmin'@'localhost' WITH GRANT OPTION;
+* nginx -s reload
+* nginx -t
+* systemctl reload nginx
+
+## aqui 
+
+********* Certbot: https://certbot.eff.org/ ******
+
+# Preparar instalación certbot
+
+* apt-get update
+* apt-get install software-properties-common
+* add-apt-repository universe
+* apt-get update
+
+* apt-get install certbot python3-certbot-nginx -y
+
+# Correr certbot
+
+* certbot --nginx
+
+# Testear renovación 
+
+* certbot renew --dry-run
+
+## Wordpress
+
+# Instalar dependencias 
+
+apt install php-fpm php-common php-mbstring php-xmlrpc php-soap php-gd php-xml php-intl php-mysql php-cli php-ldap php-zip php-curl -y
+
+
+
+************** Crear DB ***********
+
+mysql -u root -p
+CREATE DATABASE wordpress;
+CREATE USER 'ctrladmin1'@'localhost' IDENTIFIED BY 'ctrl';
+GRANT ALL ON wordpress.* TO 'ctrladmin1'@'localhost' IDENTIFIED BY 'ctrl' WITH GRANT OPTION;
+FLUSH PRIVILEGES;
+EXIT;
+
+*************** Bajar e instalar wordpress ***********
+
+* cd /var/www/juan
+* wget https://wordpress.org/latest.tar.gz
+* tar -zxvf latest.tar.gz
+* mv wordpress/* /var/www/juan
+chmod -R www-data:www-data /var/www/juan/
+* find /var/www/juan -type d -exec chmod 0755 {} \;
+* find /var/www/juan -type f -exec chmod 0644 {} \;
+
+# Configurar wordpress
+
+cd /var/www/juan 
+* mv wp-config-sample.php wp-config.php
+* nano wp-config.php
+
+
+// ** Database settings - You can get this info from your web host ** //
+/** The name of the database for WordPress */
+define( 'DB_NAME', 'wordpress' );
+
+/** Database username */
+define( 'DB_USER', 'wordpressuserctrl' );
+
+/** Database password */
+define( 'DB_PASSWORD', 'ctrl' );
+
+/** Database hostname */
+define( 'DB_HOST', 'localhost' );
+
+/** Database charset to use in creating database tables. */
+define( 'DB_CHARSET', 'utf8' );
+
+/** The database collate type. Don't change this if in doubt. */
+define( 'DB_COLLATE', '' );
+
+
+(Configurar DB_NAME, DB_USER, DB_PASSWORD, DB_HOST)
+* nginx -s reload
+* nginx -t
+* systemctl reload nginx
+
+Lets encrypt: https://letsencrypt.org/es/about/

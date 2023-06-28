@@ -5,11 +5,12 @@
 * deactivate
 * pip install django
 * django-admin startproject core .
-* python manage.py startapp core
+* python manage.py startapp blog
 * python manage.py runserver
 * python manage.py createsuperuser
 * python manage.py makemigrations
 * python manage.py migrate
+* pip install django-environ
 * pip freeze > requirements.txt
 * pip install -r requirements.txt
 * https://render.com/docs/deploy-django
